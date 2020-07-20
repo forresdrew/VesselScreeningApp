@@ -19,7 +19,7 @@ import { Picker } from '@react-native-community/picker';
 
 class Create extends Component {
 
-    static navigationOptions = { header: null }
+    static navigationOptions = { headerShown: false }
 
 
     constructor() {

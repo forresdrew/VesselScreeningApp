@@ -13,7 +13,7 @@ import {
 
 class Start extends Component {
 
-    static navigationOptions = { header: null }
+    static navigationOptions = { headerShown: false }
 
     constructor() {
         super();
