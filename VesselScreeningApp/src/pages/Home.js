@@ -8,8 +8,7 @@ import {
     StatusBar,
     LogBox,
     Dimensions,
-    Linking,
-    Image
+    Linking
 } from 'react-native';
 
 class Home extends Component {
