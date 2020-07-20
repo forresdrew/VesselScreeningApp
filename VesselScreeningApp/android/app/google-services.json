@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "791869529105",
+    "firebase_url": "https://vesselscreening.firebaseio.com",
+    "project_id": "vesselscreening",
+    "storage_bucket": "vesselscreening.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:791869529105:android:bff476cc46a9e782cf65b0",
+        "android_client_info": {
+          "package_name": "com.vesselscreeningapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "791869529105-dsto98thn38m937524mr1g50jkqa92sf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vesselscreeningapp",
+            "certificate_hash": "cbaacf17c1f18b7ef0e541b268ae977e9742c309"
+          }
+        },
+        {
+          "client_id": "791869529105-usrr3jp0841hg9fruiins8t8u59hgkbg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuV4SnwWxcrN89iDkA8U5QgHO5gFDXs78"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "791869529105-usrr3jp0841hg9fruiins8t8u59hgkbg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
