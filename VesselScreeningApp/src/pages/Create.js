@@ -11,11 +11,11 @@ import {
     LogBox,
     Dimensions,
     ScrollView,
-    Picker,
     TextInput,
     Alert,
     ToastAndroid,
 } from 'react-native';
+import { Picker } from '@react-native-community/picker';
 
 class Create extends Component {
 
