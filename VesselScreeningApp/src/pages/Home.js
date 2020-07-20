@@ -6,7 +6,7 @@ import {
     StyleSheet,
     TouchableOpacity,
     StatusBar,
-    YellowBox,
+    LogBox,
     Dimensions,
     Linking,
     Image
@@ -18,7 +18,7 @@ class Home extends Component {
 
     constructor() {
         super();
-        YellowBox.ignoreWarnings(['navigationOptions'])
+        LogBox.ignoreLogs(['navigationOptions'])
     }
 
     render() {

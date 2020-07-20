@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
     View,
     StatusBar,
-    YellowBox,
+    LogBox,
     Dimensions,
     ScrollView,
     Picker,
@@ -24,7 +24,7 @@ class Create extends Component {
 
     constructor() {
         super();
-        YellowBox.ignoreWarnings(['componentWillReceiveProps', 'DatePickerAndroid', 'Functions are not valid', 'Failed prop type'])
+        LogBox.ignoreLogs(['componentWillReceiveProps', 'DatePickerAndroid', 'Functions are not valid', 'Failed prop type'])
 
         let today = new Date();
         let date = today.getDate() + "-" + parseInt(today.getMonth() + 1) + "-" + today.getFullYear();
