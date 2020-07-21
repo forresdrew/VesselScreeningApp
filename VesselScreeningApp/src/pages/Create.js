@@ -8,23 +8,24 @@ import {
     TouchableOpacity,
     View,
     StatusBar,
-    YellowBox,
+    LogBox,
     Dimensions,
     ScrollView,
-    Picker,
     TextInput,
     Alert,
     ToastAndroid,
 } from 'react-native';
+import { Picker } from '@react-native-community/picker';
+import database from '@react-native-firebase/database';
 
 class Create extends Component {
 
-    static navigationOptions = { header: null }
+    static navigationOptions = { headerShown: false }
 
 
     constructor() {
         super();
-        YellowBox.ignoreWarnings(['componentWillReceiveProps', 'DatePickerAndroid', 'Functions are not valid', 'Failed prop type'])
+        LogBox.ignoreLogs(['componentWillReceiveProps', 'DatePickerAndroid', 'Functions are not valid', 'Failed prop type'])
 
         let today = new Date();
         let date = today.getDate() + "-" + parseInt(today.getMonth() + 1) + "-" + today.getFullYear();
@@ -287,8 +288,12 @@ class Create extends Component {
             return;
         }
 
+        // passed validation
+        // make assessment
+        let reason = '';
+        let outcome = '';
         if (this.state.eudistomaChecked || this.state.pyuraChecked || this.state.sabellaChecked || this.state.styelaChecked || this.state.undariaChecked || this.state.newChecked) {
-            let reason = 'Recommended that vessel is hauled and waterblasted.\n\nDesignated pests present:';
+            reason = 'Recommended that vessel is hauled and waterblasted.\n\nDesignated pests present:';
             if (this.state.eudistomaChecked) {
                 reason += '\n- Eudistoma';
             }
@@ -307,77 +312,78 @@ class Create extends Component {
             if (this.state.newChecked) {
                 reason += '\n- Suspected new pest';
             }
-            Alert.alert(
-                'FAIL',
-                reason,
-                [
-                    { text: 'OK' },
-                ],
-                { cancelable: false }
-            );
-
-            return;
+            outcome = 'FAIL';
+            // Alert.alert(
+            //     'FAIL',
+            //     reason,
+            //     [
+            //         { text: 'OK' },
+            //     ],
+            //     { cancelable: false }
+            // );
+            // return;
         } else {
             if (parseFloat(foul) < 6 || parseFloat(blast) < 1) {
                 if (parseFloat(dur) > 12 || parseInt(this.state.lof) > 2) {
-                    let reason = 'Recommended that vessel has dive inspection and/or further advice is sought from expert.\n';
+                    reason = 'Recommended that vessel has dive inspection and/or further advice is sought from expert.\n';
                     if (parseFloat(dur) > 12) {
                         reason += '\n- Vessel has intended stay of more than 12 months.\n';
                     }
                     if (parseInt(this.state.lof) > 2) {
                         reason += '\n- Vessel has a LOF greater than 2.';
                     }
-                    Alert.alert(
-                        'INSPECT',
-                        reason,
-                        [
-                            { text: 'OK' },
-                        ],
-                        { cancelable: false }
-                    );
-
-                    return;
+                    outcome = 'INSPECT';
+                    // Alert.alert(
+                    //     'INSPECT',
+                    //     reason,
+                    //     [
+                    //         { text: 'OK' },
+                    //     ],
+                    //     { cancelable: false }
+                    // );
+                    // return;
                 } else {
                     if (parseFloat(dur) < 1) {
-                        Alert.alert(
-                            'PASS',
-                            'Vessel meets safe berthing criteria.',
-                            [
-                                { text: 'OK' },
-                            ],
-                            { cancelable: false }
-                        );
-
-                        return;
-                    }
-                    if (parseFloat(dur) >= 1 && parseFloat(dur) <= 12) {
+                        outcome = 'PASS';
+                        // Alert.alert(
+                        //     'PASS',
+                        //     'Vessel meets safe berthing criteria.',
+                        //     [
+                        //         { text: 'OK' },
+                        //     ],
+                        //     { cancelable: false }
+                        // );
+                        // return;
+                    } else if (parseFloat(dur) >= 1 && parseFloat(dur) <= 12) {
                         if (parseFloat(blast) < 1) {
-                            Alert.alert(
-                                'PASS',
-                                'Vessel meets safe berthing criteria.',
-                                [
-                                    { text: 'OK' },
-                                ],
-                                { cancelable: false }
-                            );
-                            return;
+                            outcome = 'PASS';
+                            // Alert.alert(
+                            //     'PASS',
+                            //     'Vessel meets safe berthing criteria.',
+                            //     [
+                            //         { text: 'OK' },
+                            //     ],
+                            //     { cancelable: false }
+                            // );
+                            // return;
                         } else {
-                            let reason = 'Recommended that vessel has dive inspection and/or further advice is sought from expert.\n\n';
+                            reason = 'Recommended that vessel has dive inspection and/or further advice is sought from expert.\n\n';
                             reason += '- Vessel has intended stay of between 1 and 12 months.\n\n- Vessel has not had a lift and complete waterblast in the past month.';
-                            Alert.alert(
-                                'INSPECT',
-                                reason,
-                                [
-                                    { text: 'OK' },
-                                ],
-                                { cancelable: false }
-                            );
-                            return;
+                            outcome = 'INSPECT';
+                            // Alert.alert(
+                            //     'INSPECT',
+                            //     reason,
+                            //     [
+                            //         { text: 'OK' },
+                            //     ],
+                            //     { cancelable: false }
+                            // );
+                            // return;
                         }
                     }
                 }
             } else {
-                let reason = '';
+                reason = '';
                 reason += '\n- Vessel does not comply with 6 or 1 rule.\n';
                 if (parseFloat(dur) > 12 || parseInt(this.state.lof) > 2) {
                     if (parseFloat(dur) > 12) {
@@ -387,30 +393,93 @@ class Create extends Component {
                         reason += '\n- Vessel has a LOF greater than 2.';
                     }
                     reason = 'Recommended that vessel is hauled and waterblasted.\n\n' + reason;
-                    Alert.alert(
-                        'FAIL',
-                        reason,
-                        [
-                            { text: 'OK' },
-                        ],
-                        { cancelable: false }
-                    );
-                    return;
+                    outcome = 'FAIL';
+                    // Alert.alert(
+                    //     'FAIL',
+                    //     reason,
+                    //     [
+                    //         { text: 'OK' },
+                    //     ],
+                    //     { cancelable: false }
+                    // );
+                    // return;
                 } else {
                     reason = 'Recommended that vessel has dive inspection and/or further advice is sought from expert.\n' + reason;
-                    Alert.alert(
-                        'INSPECT',
-                        reason,
-                        [
-                            { text: 'OK' },
-                        ],
-                        { cancelable: false }
-                    );
-
-                    return;
+                    outcome = 'INSPECT';
+                    // Alert.alert(
+                    //     'INSPECT',
+                    //     reason,
+                    //     [
+                    //         { text: 'OK' },
+                    //     ],
+                    //     { cancelable: false }
+                    // );
+                    // return;
                 }
             }
         }
+
+        // then write to db with assessment outcome
+        // and alert
+        database()
+            // use assessor name/org in future
+            .ref('/users/hayds/assessments')
+            .push()
+            .set({
+                date: this.state.date,
+                outcome: outcome,
+                reason: reason,
+                portArrival: this.state.portArrival,
+                assessorName: this.state.assessorName,
+                eudistomaChecked: this.state.eudistomaChecked,
+                pyuraChecked: this.state.pyuraChecked,
+                sabellaChecked: this.state.sabellaChecked,
+                styelaChecked: this.state.styelaChecked,
+                undariaChecked: this.state.undariaChecked,
+                newChecked: this.state.newChecked,
+                antifoul: this.state.antifoul,
+                waterblast: this.state.waterblast,
+                duration: this.state.duration,
+                lof: this.state.lof,
+                portHome: this.state.portHome,
+                internationalVisited: this.state.internationalVisited,
+                aucklandVisited: this.state.aucklandVisited,
+                bopVisited: this.state.bopVisited,
+                canterburyVisited: this.state.canterburyVisited,
+                hawkebayVisited: this.state.hawkebayVisited,
+                marlboroughVisited: this.state.marlboroughVisited,
+                nelsonVisited: this.state.nelsonVisited,
+                northlandVisited: this.state.northlandVisited,
+                otagoVisited: this.state.otagoVisited,
+                southlandVisited: this.state.southlandVisited,
+                taranakiVisited: this.state.taranakiVisited,
+                tasmanVisited: this.state.tasmanVisited,
+                waikatoVisited: this.state.waikatoVisited,
+                wellingtonVisited: this.state.wellingtonVisited,
+                notes: this.state.notes,
+                output: this.state.output,
+                outputReason: this.state.outputReason,
+                antifoulUnknown: this.state.antifoulUnknown,
+                waterblastUnknown: this.state.waterblastUnknown,
+                vesselName: this.state.vesselName,
+                ownerName: this.state.ownerName,
+                ownerContact: this.state.ownerContact,
+                lessOne: this.state.lessOne,
+                greatTwelve: this.state.greatTwelve,
+                portArrivalOther: this.state.portArrivalOther,
+                portHomeOther: this.state.portHomeOther
+            })
+            .then(() => {
+                Alert.alert(
+                    outcome,
+                    reason,
+                    [
+                        { text: 'OK' },
+                    ],
+                    { cancelable: false }
+                );
+                // and nav to summary page in future
+            });
     }
 
     render() {

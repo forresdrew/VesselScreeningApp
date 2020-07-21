@@ -6,19 +6,18 @@ import {
     StyleSheet,
     TouchableOpacity,
     StatusBar,
-    YellowBox,
+    LogBox,
     Dimensions,
-    Linking,
-    Image
+    Linking
 } from 'react-native';
 
 class Home extends Component {
 
-    static navigationOptions = { header: null }
+    static navigationOptions = { headerShown: false }
 
     constructor() {
         super();
-        YellowBox.ignoreWarnings(['navigationOptions'])
+        LogBox.ignoreLogs(['navigationOptions'])
     }
 
     render() {

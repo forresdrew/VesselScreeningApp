@@ -7,17 +7,17 @@ import {
     TouchableOpacity,
     Image,
     StatusBar,
-    YellowBox,
+    LogBox,
     Dimensions,
 } from 'react-native';
 
 class Start extends Component {
 
-    static navigationOptions = { header: null }
+    static navigationOptions = { headerShown: false }
 
     constructor() {
         super();
-        YellowBox.ignoreWarnings(['navigationOptions'])
+        LogBox.ignoreLogs(['navigationOptions'])
     }
 
     render() {
